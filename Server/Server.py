@@ -28,9 +28,8 @@ class Server:
                     self.messageQueue[connection] = queue.Queue()
                 else:
                     data = i.recv(1024)
-                    print(data)
+                    print(str(data))
                     if data:
-                        self.messageQueue[i].put(data)
                         if i not in self.output:
                             self.output.append(i)
                     else:
