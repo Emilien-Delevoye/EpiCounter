@@ -11,13 +11,15 @@ class Server:
         self.input = [self.socket]
         self.output = list()
         self.messageQueue = {}
+        self.buffer = {}
 
     def open(self):
-        self.socket.bind(('localhost', 4242))
+        self.socket.bind(('localhost', 4243))
         self.socket.listen(5)
         self.serverOpen = True
 
     def run(self):
+        print("Server running")
         while self.serverOpen:
             readable, writable, expect = select.select(self.input, self.output, self.input)
             for i in readable:
@@ -26,9 +28,11 @@ class Server:
                     connection.setblocking(False)
                     self.input.append(connection)
                     self.messageQueue[connection] = queue.Queue()
+                    self.buffer[connection] = str()
                 else:
-                    data = i.recv(1024)
-                    print(str(data))
+                    data = i.recv(1024).decode('utf-8')
+                    self.buffer[i] += data
+                    print(self.buffer[i])
                     if data:
                         if i not in self.output:
                             self.output.append(i)
@@ -39,6 +43,7 @@ class Server:
                         print("Client with fd", i.fileno(), "is now closed.")
                         i.close()
                         del self.messageQueue[i]
+                        del self.buffer[i]
             for i in writable:
                 try:
                     next_msg = self.messageQueue[i].get_nowait()
@@ -53,6 +58,7 @@ class Server:
                 print("Client with fd ", i.fileno(), " is now closed.")
                 i.close()
                 del self.messageQueue[i]
+                del self.buffer[i]
 
     def close(self):
         self.socket.close()
