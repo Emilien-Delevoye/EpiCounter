@@ -30,9 +30,12 @@ class Server:
                     self.messageQueue[connection] = queue.Queue()
                     self.buffer[connection] = str()
                 else:
-                    data = i.recv(1024).decode('utf-8')
-                    self.buffer[i] += data
-                    print(self.buffer[i])
+                    try:
+                        data = i.recv(1024).decode('utf-8')
+                        self.buffer[i] += data
+                        print(self.buffer[i])
+                    except ConnectionResetError:
+                        data = None
                     if data:
                         if i not in self.output:
                             self.output.append(i)
@@ -59,6 +62,12 @@ class Server:
                 i.close()
                 del self.messageQueue[i]
                 del self.buffer[i]
+            self.__read_data__()
+
+    def __read_data__(self):
+        for i in self.buffer:
+            a = self.buffer[i].split('\n')
+            print(a)
 
     def close(self):
         self.socket.close()
