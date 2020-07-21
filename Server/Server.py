@@ -12,6 +12,7 @@ class Server:
         self.output = list()
         self.messageQueue = {}
         self.buffer = {}
+        self.database = {}
 
     def open(self):
         self.socket.bind(('localhost', 4243))
@@ -21,7 +22,7 @@ class Server:
     def run(self):
         print("Server running")
         while self.serverOpen:
-            readable, writable, expect = select.select(self.input, self.output, self.input)
+            readable, writable, expect = select.select(self.input, self.output, self.input, 0)
             for i in readable:
                 if i is self.socket:
                     connection, ip = self.socket.accept()
@@ -33,7 +34,6 @@ class Server:
                     try:
                         data = i.recv(1024).decode('utf-8')
                         self.buffer[i] += data
-                        print(self.buffer[i])
                     except ConnectionResetError:
                         data = None
                     if data:
@@ -66,8 +66,23 @@ class Server:
 
     def __read_data__(self):
         for i in self.buffer:
-            a = self.buffer[i].split('\n')
-            print(a)
+            a = self.buffer[i].split("\n")
+            if a[0]:
+                self.__new_cmd__(a[0].split("|"))
+            self.buffer[i] = str("")
+            for j in a[1:]:
+                self.buffer[i] += j
+
+    def __new_cmd__(self, data):
+        if data[0] not in self.database:
+            self.database[data[0]] = 0
+        if data[1] == "+1":
+            self.database[data[0]] += 1
+        elif data[1] == "-1":
+            self.database[data[0]] -= 1
+        if self.database[data[0]] < 0:
+            self.database[data[0]] = 0
+        print(data[0], ":", self.database[data[0]], "(" + data[1] + ")")
 
     def close(self):
         self.socket.close()
