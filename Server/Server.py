@@ -1,6 +1,7 @@
 import socket
 import select
 import queue
+from datetime import datetime
 
 
 class Server:
@@ -13,6 +14,7 @@ class Server:
         self.messageQueue = {}
         self.buffer = {}
         self.database = {}
+        self.save_minute = 0
 
     def open(self):
         self.socket.bind(('localhost', 4243))
@@ -63,19 +65,23 @@ class Server:
                 del self.messageQueue[i]
                 del self.buffer[i]
             self.__read_data__()
+            self.__update_database__()
 
     def __read_data__(self):
         for i in self.buffer:
             a = self.buffer[i].split("\n")
             if a[0]:
-                self.__new_cmd__(a[0].split("|"))
+                try:
+                    self.__new_cmd__(a[0].split("|"))
+                except IndexError:
+                    print("The message doesn't respect the protocol")
             self.buffer[i] = str("")
             for j in a[1:]:
                 self.buffer[i] += j
 
     def __new_cmd__(self, data):
         if data[0] not in self.database:
-            self.database[data[0]] = 0
+            self.database[str(data[0])] = 0
         if data[1] == "+1":
             self.database[data[0]] += 1
         elif data[1] == "-1":
@@ -83,6 +89,20 @@ class Server:
         if self.database[data[0]] < 0:
             self.database[data[0]] = 0
         print(data[0], ":", self.database[data[0]], "(" + data[1] + ")")
+
+    def __update_database__(self):
+        date = datetime.now()
+        if date.second % 10 != 0 or date.second == self.save_minute:
+            return
+        self.save_minute = date.second
+        self.__update_file_data__()
+
+    def __update_file_data__(self):
+        file = open("data_EpiCounter.txt", "a")
+        file.write(datetime.now().strftime("=== %d/%m/%Y %H:%M:%S ===") + "\n")
+        for i in self.database:
+            file.write(str(i) + "|" + str(self.database[i]) + "\n")
+        file.close()
 
     def close(self):
         self.socket.close()
