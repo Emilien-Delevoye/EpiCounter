@@ -13,7 +13,8 @@ class Server:
         self.output = list()
         self.messageQueue = {}
         self.buffer = {}
-        self.database = {}
+        self.database = {"Cray_1": 0, "Cray_2": 0, "Knuth_1": 0, "Knuth_2": 0, "Knuth_3": 0, "Hamilton_1": 0,
+                         "Hamilton_2": 0, "Byron_1": 0, "Byron_2": 0, "Babbage": 0, "Pascal": 0, "Turing": 0}
         self.save_minute = 0
 
     def open(self):
@@ -81,7 +82,8 @@ class Server:
 
     def __new_cmd__(self, data):
         if data[0] not in self.database:
-            self.database[str(data[0])] = 0
+            print("Room not registered")
+            return
         if data[1] == "+1":
             self.database[data[0]] += 1
         elif data[1] == "-1":
