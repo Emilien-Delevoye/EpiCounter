@@ -1,8 +1,40 @@
-from flask import Flask, send_from_directory
+from flask import Flask, send_from_directory, jsonify, request
+from datetime import datetime
 import os
 
 
 app = Flask(__name__)
+
+
+def read_file():
+    filename = "data/" + datetime.now().strftime("%d-%m-%Y") + ".txt"
+    current_date = None
+    all_data = {}
+    try:
+        file = open(filename, "r")
+    except FileNotFoundError:
+        return None
+    for i in file:
+        if i[0] == '=':
+            current_date = datetime.strptime(i, "=== %d/%m/%Y %H:%M:%S ===\n").strftime("%d/%m/%Y %H:%M:%S")
+            all_data[current_date] = {}
+        else:
+            room_data = i.split('|')
+            all_data[current_date][room_data[0]] = room_data[1][:-1]
+    file.close()
+    return all_data
+
+
+def return_data(params):
+    data = read_file()
+    if data is None:
+        return "No data found"
+    print(list(data.keys()))
+    print(data[list(data.keys())[-1]])
+    if params == "json":
+        return jsonify(data)
+    else:
+        return "Work in progress"
 
 
 @app.route('/favicon.ico')
@@ -107,7 +139,8 @@ def turing_1():
 
 @app.route("/")
 def home():
-    return "Hello"
+    params = request.values.get('format')
+    return return_data(params)
 
 
 def main():

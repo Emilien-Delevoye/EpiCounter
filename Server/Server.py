@@ -100,7 +100,8 @@ class Server:
         self.__update_file_data__()
 
     def __update_file_data__(self):
-        file = open("data_EpiCounter.txt", "a")
+        filename = "WebInterface/data/" + datetime.now().strftime("%d-%m-%Y") + ".txt"
+        file = open(filename, "a")
         file.write(datetime.now().strftime("=== %d/%m/%Y %H:%M:%S ===") + "\n")
         for i in self.database:
             file.write(str(i) + "|" + str(self.database[i]) + "\n")
