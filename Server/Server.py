@@ -13,8 +13,10 @@ class Server:
         self.output = list()
         self.messageQueue = {}
         self.buffer = {}
-        self.database = {"Cray_1": 0, "Cray_2": 0, "Knuth_1": 0, "Knuth_2": 0, "Knuth_3": 0, "Hamilton_1": 0,
-                         "Hamilton_2": 0, "Byron_1": 0, "Byron_2": 0, "Babbage": 0, "Pascal": 0, "Turing": 0}
+        self.database = {"Cray": 0, "Cray_1": [0, 0], "Cray_2": [0, 0], "Knuth": 0, "Knuth_1": [0, 0], "Knuth_2": [0, 0],
+                         "Knuth_3": [0, 0], "Hamilton": 0, "Hamilton_1": [0, 0], "Hamilton_2": [0, 0],
+                         "Byron": 0, "Byron_1": [0, 0], "Byron_2": [0, 0], "Babbage": 0, "Babbage_1": [0, 0],
+                         "Pascal": 0, "Pascal_1": [0, 0], "Turing": 0, "Turing_1": [0, 0]}
         self.save_minute = 0
 
     def open(self):
@@ -81,16 +83,16 @@ class Server:
                 self.buffer[i] += j
 
     def __new_cmd__(self, data):
-        if data[0] not in self.database:
+        if data[0] not in self.database or "_" not in data[0]:
             print("Room not registered")
             return
         if data[1] == "+1":
-            self.database[data[0]] += 1
+            self.database[data[0]][0] += 1
+            self.database[data[0][:-2]] += 1
         elif data[1] == "-1":
-            self.database[data[0]] -= 1
-        if self.database[data[0]] < 0:
-            self.database[data[0]] = 0
-        print(data[0], ":", self.database[data[0]], "(" + data[1] + ")")
+            self.database[data[0]][1] += 1
+            self.database[data[0][:-2]] -= 1
+        print(data[0], ":", self.database[data[0]], "(" + data[1] + ")", " || ", self.database[data[0][:-2]])
 
     def __update_database__(self):
         date = datetime.now()
