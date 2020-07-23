@@ -1,5 +1,4 @@
 /.idea/
 __pycache__
-protocol.txt
-protocole.txt
+*.txt
 data_EpiCounter.txt
