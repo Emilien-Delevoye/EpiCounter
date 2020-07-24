@@ -1,4 +1,6 @@
 from flask import Flask, send_from_directory, jsonify, request
+import matplotlib.pyplot as plt
+import matplotlib.dates as mdates
 from datetime import datetime
 import os
 
@@ -25,14 +27,35 @@ def read_file():
     return all_data
 
 
-def return_data(params):
+def create_plot(room, new_data):
+    times = [datetime.strptime(line, "%d/%m/%Y %H:%M:%S") for line in new_data.keys()]
+    values = [float(line) for line in new_data.values()]
+    fig, ax = plt.subplots()
+    ax.set_title(room + " : " + times[0].strftime("%d/%m/%Y"))
+    ax.set_xlabel("Nombre de personnes")
+    ax.set_ylabel("Heure")
+    ax.plot_date(times, values, 'k-')
+    hfmt = mdates.DateFormatter('%H:%M:%S')
+    ax.xaxis.set_major_formatter(hfmt)
+    plt.gcf().autofmt_xdate()
+    plt.savefig(times[0].strftime("%d-%m-%Y") + ".png", dpi=300)
+
+
+def return_data(params, room, door):
+    new_data = {}
     data = read_file()
     if data is None:
         return "No data found"
-    print(list(data.keys()))
-    print(data[list(data.keys())[-1]])
-    if params == "json":
-        return jsonify(data)
+    for i in data.keys():
+        if door == 0:
+            new_data[i] = data[i][room]
+        else:
+            new_data[i] = data[i][room + "_" + str(door)]
+    create_plot(room, new_data)
+    if params["format"] == "json" and params["current"] is None:
+        return jsonify(new_data)
+    elif params["format"] == "json" and params["current"] == "true":
+        return jsonify(new_data[list(data.keys())[-1]])
     else:
         return "Work in progress"
 
@@ -44,103 +67,162 @@ def favicon():
 
 @app.route("/cray")
 def cray():
-    return "Cray"
+    params = dict()
+    params["format"] = request.values.get('format')
+    params["current"] = request.values.get('current')
+    return return_data(params, "Cray", 0)
 
 
 @app.route("/cray/door_1")
 def cray_1():
-    return "Cray door 1"
+    params = dict()
+    params["format"] = request.values.get('format')
+    params["current"] = request.values.get('current')
+    return return_data(params, "Cray", 1)
 
 
 @app.route("/cray/door_2")
 def cray_2():
-    return "Cray door 2"
+    params = dict()
+    params["format"] = request.values.get('format')
+    params["current"] = request.values.get('current')
+    return return_data(params, "Cray", 2)
 
 
 @app.route("/knuth")
 def knuth():
-    return "Knuth"
+    params = dict()
+    params["format"] = request.values.get('format')
+    params["current"] = request.values.get('current')
+    return return_data(params, "Knuth", 0)
 
 
 @app.route("/knuth/door_1")
 def knuth_1():
-    return "Knuth door 1"
+    params = dict()
+    params["format"] = request.values.get('format')
+    params["current"] = request.values.get('current')
+    return return_data(params, "Knuth", 1)
 
 
 @app.route("/knuth/door_2")
 def knuth_2():
-    return "Knuth door 2"
+    params = dict()
+    params["format"] = request.values.get('format')
+    params["current"] = request.values.get('current')
+    return return_data(params, "Knuth", 2)
 
 
 @app.route("/knuth/door_3")
 def knuth_3():
-    return "Knuth door 3"
+    params = dict()
+    params["format"] = request.values.get('format')
+    params["current"] = request.values.get('current')
+    return return_data(params, "Knuth", 3)
 
 
 @app.route("/hamilton")
 def hamilton():
-    return "Hamilton"
+    params = dict()
+    params["format"] = request.values.get('format')
+    params["current"] = request.values.get('current')
+    return return_data(params, "Hamilton", 0)
 
 
 @app.route("/hamilton/door_1")
 def hamilton_1():
-    return "Hamilton door 1"
+    params = dict()
+    params["format"] = request.values.get('format')
+    params["current"] = request.values.get('current')
+    return return_data(params, "Hamilton", 1)
 
 
 @app.route("/hamilton/door_2")
 def hamilton_2():
-    return "Hamilton door 2"
+    params = dict()
+    params["format"] = request.values.get('format')
+    params["current"] = request.values.get('current')
+    return return_data(params, "Hamilton", 2)
 
 
 @app.route("/byron")
 def byron():
-    return "Byron"
+    params = dict()
+    params["format"] = request.values.get('format')
+    params["current"] = request.values.get('current')
+    return return_data(params, "Byron", 0)
 
 
 @app.route("/byron/door_1")
 def byron_1():
-    return "Byron door 1"
+    params = dict()
+    params["format"] = request.values.get('format')
+    params["current"] = request.values.get('current')
+    return return_data(params, "Byron", 1)
 
 
 @app.route("/byron/door_2")
 def byron_2():
-    return "Byron door 2"
+    params = dict()
+    params["format"] = request.values.get('format')
+    params["current"] = request.values.get('current')
+    return return_data(params, "Byron", 2)
 
 
 @app.route("/babbage")
 def babbage():
-    return "Babbage"
+    params = dict()
+    params["format"] = request.values.get('format')
+    params["current"] = request.values.get('current')
+    return return_data(params, "Babbage", 0)
 
 
 @app.route("/babbage/door_1")
 def babbage_1():
-    return "Babbage door 1"
+    params = dict()
+    params["format"] = request.values.get('format')
+    params["current"] = request.values.get('current')
+    return return_data(params, "Babbage", 1)
 
 
 @app.route("/pascal")
 def pascal():
-    return "Pascal"
+    params = dict()
+    params["format"] = request.values.get('format')
+    params["current"] = request.values.get('current')
+    return return_data(params, "Pascal", 0)
 
 
 @app.route("/pascal/door_1")
 def pascal_1():
-    return "Pascal door 1"
+    params = dict()
+    params["format"] = request.values.get('format')
+    params["current"] = request.values.get('current')
+    return return_data(params, "Pascal", 1)
 
 
 @app.route("/turing")
 def turing():
-    return "Turing"
+    params = dict()
+    params["format"] = request.values.get('format')
+    params["current"] = request.values.get('current')
+    return return_data(params, "Turing", 0)
 
 
 @app.route("/turing/door_1")
 def turing_1():
-    return "Turing door 1"
+    params = dict()
+    params["format"] = request.values.get('format')
+    params["current"] = request.values.get('current')
+    return return_data(params, "Turing", 1)
 
 
 @app.route("/")
 def home():
-    params = request.values.get('format')
-    return return_data(params)
+    params = dict()
+    params["format"] = request.values.get('format')
+    params["current"] = request.values.get('current')
+    return return_data(params, "Cray", 0)
 
 
 def main():
