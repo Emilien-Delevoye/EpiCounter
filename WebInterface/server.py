@@ -13,14 +13,11 @@ class Server(Thread):
         while True:
             try:
                 data, addr = sock.recvfrom(1024)
-                print("received message: %s" % data.decode('utf-8'))
-                print(addr)
                 data = data.decode("utf-8")
                 data = data.split("\n")[0]
                 data = data.split("|")
                 if len(data) != 2:
                     raise ValueError
-                print(data)
                 if data[0] not in self.database.keys():
                     self.database[data[0]] = 0
                     if data[1] == "+1":
@@ -32,7 +29,6 @@ class Server(Thread):
                         self.database[data[0]] -= 1
                     else:
                         raise ValueError
-                print(self.database)
             except:
                 print("Message ignoré (Erreur de réception)")
 
