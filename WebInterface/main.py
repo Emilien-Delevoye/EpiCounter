@@ -1,11 +1,13 @@
 from flask import Flask, send_from_directory, jsonify, request
-import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
+import matplotlib.pyplot as plt
 from datetime import datetime
+from WebInterface.server import Server
 import os
 
 
 app = Flask(__name__)
+a = Server()
 
 
 def read_file():
@@ -228,6 +230,7 @@ def home():
 
 
 def main():
+    a.start()
     app.run()
 
 
