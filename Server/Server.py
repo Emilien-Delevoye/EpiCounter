@@ -20,7 +20,7 @@ class Server:
         self.save_minute = 0
 
     def open(self):
-        self.socket.bind(('localhost', 4243))
+        self.socket.bind(('127.0.0.1', 4243))
         self.socket.listen(5)
         self.serverOpen = True
 

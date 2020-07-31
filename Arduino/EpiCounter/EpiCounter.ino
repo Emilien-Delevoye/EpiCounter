@@ -1,17 +1,22 @@
+#include <WiFiNINA.h>
+
 const byte TRIGGER_PIN_A = 2;
 const byte TRIGGER_PIN_B = 12;
-
 const byte ECHO_PIN_A = 3;
 const byte ECHO_PIN_B = 13;
-
 const unsigned long MEASURE_TIMEOUT = 25000UL;
-
 const float SOUND_SPEED = 340.0 / 1000;
-
 unsigned long previous_a = 0;
 unsigned long previous_b = 0;
 bool previous_state_a = false;
 bool previous_state_b = false;
+
+char ssid[] = "Pointe de Chesery";
+char pass[] = "LaChauxdesRosees";
+int status = WL_IDLE_STATUS;
+
+WiFiClient client;
+IPAddress ip(192, 168, 1, 2);
 
 void setup() {
     Serial.begin(9600);
@@ -26,6 +31,14 @@ void setup() {
     pinMode(11, OUTPUT);
     pinMode(5, OUTPUT);
     pinMode(10, OUTPUT);
+    pinMode(6, OUTPUT);
+    digitalWrite(6, LOW);
+    while (status != WL_CONNECTED) {
+        status = WiFi.begin(ssid, pass);
+        delay(5000);
+    }
+    while (client.connect(ip, 4242) == 0);
+    digitalWrite(6, HIGH);
 }
 
 float calc_distance(const byte trigger, const byte echo)
@@ -58,6 +71,8 @@ void loop() {
     const unsigned long current_time = millis();
     float distance_cm_a = calc_distance(TRIGGER_PIN_A, ECHO_PIN_A);
     float distance_cm_b = calc_distance(TRIGGER_PIN_B, ECHO_PIN_B);
+    Serial.println(distance_cm_a);
+    Serial.println(distance_cm_b);
     static byte pos = 0;
     static int nb = 10;
 
@@ -86,12 +101,14 @@ void loop() {
         if (previous_a < previous_b && pos != 1) {
             digitalWrite(5, HIGH);
             digitalWrite(10, LOW);
+            client.println("Cray_1|-1");
             pos = 1;
             nb += 1;
             Serial.println(nb);
         } else if (previous_a > previous_b && pos != 2) {
             digitalWrite(10, HIGH);
             digitalWrite(5, LOW);
+            client.println("Cray_1|+1");
             pos = 2;
             nb -= 1;
             Serial.println(nb);

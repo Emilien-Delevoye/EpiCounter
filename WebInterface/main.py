@@ -29,6 +29,7 @@ def read_file():
 
 def create_plot(room, new_data):
     times = [datetime.strptime(line, "%d/%m/%Y %H:%M:%S") for line in new_data.keys()]
+    print(new_data)
     values = [float(line) for line in new_data.values()]
     fig, ax = plt.subplots()
     ax.set_title(room + " : " + times[0].strftime("%d/%m/%Y"))
@@ -51,7 +52,8 @@ def return_data(params, room, door):
             new_data[i] = data[i][room]
         else:
             new_data[i] = data[i][room + "_" + str(door)]
-    create_plot(room, new_data)
+    if door == 0:
+        create_plot(room, new_data)
     if params["format"] == "json" and params["current"] is None:
         return jsonify(new_data)
     elif params["format"] == "json" and params["current"] == "true":
