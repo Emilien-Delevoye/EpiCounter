@@ -4,12 +4,14 @@ import matplotlib.pyplot as plt
 from datetime import datetime
 from WebInterface.server import Server
 from WebInterface.save_data import SaveData
+from WebInterface.init_data import InitData
 import os
 
 
 app = Flask(__name__)
 server = Server()
 savedata = SaveData(server)
+init = InitData()
 
 
 def read_file():
@@ -232,6 +234,7 @@ def home():
 
 
 def main():
+    init.read_config_file()
     server.start()
     savedata.start()
     app.run()

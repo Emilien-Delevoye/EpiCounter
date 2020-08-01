@@ -18,4 +18,3 @@ class SaveData(Thread):
                     print(i, data[i])
             elif datetime.now().second % 2 != 0 and current is True:
                 current = False
-
