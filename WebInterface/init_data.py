@@ -12,3 +12,6 @@ class InitData:
 
     def get_dict(self):
         return self.__dict__
+
+    def get_room_names(self):
+        return list(self.__dict__.keys())

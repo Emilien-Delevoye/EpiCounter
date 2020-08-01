@@ -67,6 +67,11 @@ def favicon():
     return send_from_directory(os.path.join(app.root_path, 'static'), 'favicon.ico', mimetype='image/vnd.microsoft.icon')
 
 
+@app.route("/rooms")
+def rooms():
+    return jsonify(init.get_room_names())
+
+
 @app.route("/<room_name>/")
 def room(room_name):
     print(room_name)
