@@ -11,7 +11,7 @@ class SaveData(Thread):
     def run(self):
         current = False
         while True:
-            if datetime.now().second % 2 == 0 and current is False:
+            if datetime.now().second % 30 == 0 and current is False:
                 current = True
                 data = self.server.get_data()
                 try:
@@ -28,5 +28,5 @@ class SaveData(Thread):
                     with open("data/" + datetime.now().strftime("%d-%m-%Y") + ".json", "rw") as file:
                         print("pouet")
                     file.close()
-            elif datetime.now().second % 2 != 0 and current is True:
+            elif datetime.now().second % 30 != 0 and current is True:
                 current = False
