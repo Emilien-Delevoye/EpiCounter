@@ -76,7 +76,7 @@ def return_data(params, room, door):
 def favicon():
     return send_from_directory(os.path.join(app.root_path, 'static'), 'favicon.ico', mimetype='image/vnd.microsoft.icon')
 
-
+'''
 @app.route("/cray")
 def cray():
     params = dict()
@@ -227,6 +227,13 @@ def turing_1():
     params["format"] = request.values.get('format')
     params["current"] = request.values.get('current')
     return return_data(params, "Turing", 1)
+'''
+
+
+@app.route("/<room>/")
+def room(room):
+    print(room)
+    return "pouet"
 
 
 @app.route("/")
@@ -241,7 +248,7 @@ def main():
     init.read_config_file()
     server.start()
     savedata.start()
-    #app.run()
+    app.run()
 
 
 if __name__ == "__main__":

@@ -14,21 +14,19 @@ class SaveData(Thread):
             if datetime.now().second % 2 == 0 and current is False:
                 current = True
                 data = self.server.get_data()
-                print(data)
                 try:
                     with open("data/" + datetime.now().strftime("%d-%m-%Y") + ".json", "r") as file:
                         tmp = json.load(file)
+                        file.close()
                     with open("data/" + datetime.now().strftime("%d-%m-%Y") + ".json", "w") as file:
                         tmp[datetime.now().strftime("%d/%m/%Y %H:%M:%S")] = data
                         file.write(str(json.dumps(tmp, indent=1)))
-                    file.close()
+                        file.close()
                 except FileNotFoundError:
                     pass
+                    #Faire ce qu'il manque dans cette fonction, dans le cas d'un nouveau fichier
                     with open("data/" + datetime.now().strftime("%d-%m-%Y") + ".json", "rw") as file:
                         print("pouet")
                     file.close()
-                '''print("salut salut", data)
-                for i in data:
-                    print(i, data[i])'''
             elif datetime.now().second % 2 != 0 and current is True:
                 current = False
