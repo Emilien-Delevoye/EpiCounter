@@ -48,7 +48,7 @@ def return_data(params, room_name):
     data = read_file()
     if data is None:
         return "No data found"
-    if room_name not in data[list(data.keys())[0]]:
+    if room_name not in list(data[list(data.keys())[0]].keys()):
         return "Room not found"
     for i in data.keys():
         new_data[i] = data[i][room_name]["total"]
@@ -67,19 +67,18 @@ def favicon():
     return send_from_directory(os.path.join(app.root_path, 'static'), 'favicon.ico', mimetype='image/vnd.microsoft.icon')
 
 
-@app.route("/rooms")
+@app.route("/rooms", methods=['GET'])
 def rooms():
     return jsonify(init.get_room_names())
 
 
 @app.route("/<room_name>/")
 def room(room_name):
-    print(room_name)
     params = dict()
     params["format"] = request.values.get('format')
     params["current"] = request.values.get('current')
     try:
-        return return_data(params, str(room))
+        return return_data(params, str(room_name))
     except:
         return "Wrong name"
 

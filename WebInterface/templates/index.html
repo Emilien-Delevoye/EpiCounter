@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <link rel="stylesheet" href="/static/style.css" />
+    <link rel="stylesheet" href="/static/style.css"/>
     <meta charset="UTF-8">
     <title>Home EpiCounter</title>
 </head>
@@ -22,6 +22,33 @@
             setTimeout("getTime()", 1000);
         }
         getTime();
+    </script>
+    <h2 id="grid"></h2>
+    <script>
+        function change() {
+            var request = new XMLHttpRequest();
+
+            request.open('GET', 'http://127.0.0.1:5000/rooms', true);
+            request.onload = function () {
+                var data = JSON.parse(this.response);
+                var i = 0;
+
+                if (request.status >= 200 && request.status < 400) {
+                    data.forEach((sub_data) => {
+                        var room = document.createElement('div');
+                        room.className = "room";
+                        room.id = 'room' + i;
+                        room.textContent = sub_data;
+                        document.getElementById("grid").appendChild(room);
+                        i += 1;
+                    })
+                } else {
+                    console.log('error');
+                }
+            }
+            request.send();
+        }
+        change();
     </script>
 </body>
 </html>
