@@ -3,11 +3,13 @@ import matplotlib.dates as mdates
 import matplotlib.pyplot as plt
 from datetime import datetime
 from WebInterface.server import Server
+from WebInterface.save_data import SaveData
 import os
 
 
 app = Flask(__name__)
-a = Server()
+server = Server()
+savedata = SaveData(server)
 
 
 def read_file():
@@ -230,7 +232,8 @@ def home():
 
 
 def main():
-    a.start()
+    server.start()
+    savedata.start()
     app.run()
 
 
