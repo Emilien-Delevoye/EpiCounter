@@ -9,9 +9,13 @@ import os
 
 
 app = Flask(__name__)
-server = Server()
-savedata = SaveData(server)
 init = InitData()
+try:
+    init.read_config_file()
+except FileNotFoundError:
+    exit(1)
+server = Server(init)
+savedata = SaveData(server)
 
 
 def read_file():
@@ -237,7 +241,7 @@ def main():
     init.read_config_file()
     server.start()
     savedata.start()
-    app.run()
+    #app.run()
 
 
 if __name__ == "__main__":

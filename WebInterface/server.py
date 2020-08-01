@@ -1,11 +1,30 @@
 from threading import Thread
 import socket
+from datetime import datetime
+import json
 
 
 class Server(Thread):
-    def __init__(self):
+    def __init__(self, init):
         Thread.__init__(self)
+        self.__source__ = init.get_dict()
         self.database = {}
+        for i in self.__source__:
+            self.database[i] = dict()
+            self.database[i]["total"] = 0
+            for j in self.__source__[i]:
+                self.database[i][j] = [0, 0]
+        try:
+            filename = "data/" + datetime.now().strftime("%d-%m-%Y") + ".json"
+            with open(filename, "r") as file:
+                tmp = json.load(file)
+                last = tmp[list(tmp.keys())[-1]]
+                for i in last:
+                    self.database[i] = last[i]
+            file.close()
+        except FileNotFoundError:
+            pass
+        print(self.database)
 
     def run(self):
         sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
