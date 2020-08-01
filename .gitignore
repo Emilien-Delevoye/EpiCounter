@@ -3,4 +3,4 @@ __pycache__
 *.txt
 data_EpiCounter.txt
 *.png
-config.json
+*.json

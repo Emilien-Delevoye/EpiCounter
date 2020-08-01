@@ -15,8 +15,7 @@ class Server(Thread):
             for j in self.__source__[i]:
                 self.database[i][j] = [0, 0]
         try:
-            filename = "data/" + datetime.now().strftime("%d-%m-%Y") + ".json"
-            with open(filename, "r") as file:
+            with open("data/" + datetime.now().strftime("%d-%m-%Y") + ".json", "r") as file:
                 tmp = json.load(file)
                 last = tmp[list(tmp.keys())[-1]]
                 for i in last:
@@ -35,7 +34,6 @@ class Server(Thread):
                 data = data.decode("utf-8")
                 data = data.split("\n")[0]
                 data = data.split("|")
-                print(data)
                 if len(data) != 3:
                     raise ValueError
                 if data[0] not in self.database.keys() or data[1] not in self.database[data[0]].keys():
@@ -49,7 +47,6 @@ class Server(Thread):
                         self.database[data[0]]["total"] -= 1
                     else:
                         raise ValueError
-                    print(self.database)
             except:
                 print("Message ignoré (Erreur de réception)")
 
