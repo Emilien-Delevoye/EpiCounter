@@ -35,19 +35,21 @@ class Server(Thread):
                 data = data.decode("utf-8")
                 data = data.split("\n")[0]
                 data = data.split("|")
-                if len(data) != 2:
+                print(data)
+                if len(data) != 3:
                     raise ValueError
-                if data[0] not in self.database.keys():
-                    self.database[data[0]] = 0
-                    if data[1] == "+1":
-                        self.database[data[0]] = 1
+                if data[0] not in self.database.keys() or data[1] not in self.database[data[0]].keys():
+                    raise Exception
                 else:
-                    if data[1] == "+1":
-                        self.database[data[0]] += 1
-                    elif data[1] == "-1" and self.database[data[0]] > 0:
-                        self.database[data[0]] -= 1
+                    if data[2] == "+1":
+                        self.database[data[0]][data[1]][0] += 1
+                        self.database[data[0]]["total"] += 1
+                    elif data[2] == "-1" and self.database[data[0]]["total"] > 0:
+                        self.database[data[0]][data[1]][1] += 1
+                        self.database[data[0]]["total"] -= 1
                     else:
                         raise ValueError
+                    print(self.database)
             except:
                 print("Message ignoré (Erreur de réception)")
 
