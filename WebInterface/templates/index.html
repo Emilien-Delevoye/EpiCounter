@@ -40,7 +40,7 @@
                     room.textContent = sub_data;
                     var nb = document.createElement('h5');
                     nb.className = "nb";
-                    nb.id = sub_data + "_room_" + i;
+                    nb.id = sub_data + "_room";
                     var xmlHttp = new XMLHttpRequest();
                     xmlHttp.open("GET", "http://127.0.0.1:5000/" + sub_data + '?format=json&current=true', false);
                     xmlHttp.send();
@@ -50,10 +50,31 @@
                     i += 1;
                 })
             } else {
-                console.log('error');
+                console.log('error ttututut');
             }
         }
         request.send();
+    </script>
+    <script>
+        var request = new XMLHttpRequest();
+        request.open("GET", "http://127.0.0.1:5000/rooms", false);
+        request.send();
+        var data = JSON.parse(request.responseText);
+        function doUpdate() {
+            var i = 0;
+            var content2 = document.getElementsByClassName("nb");
+            if (content2.length !== 0) {
+                data.forEach((sub_data) => {
+                    var xmlHttp = new XMLHttpRequest();
+                    xmlHttp.open("GET", "http://127.0.0.1:5000/" + sub_data + '?format=json&current=true', false);
+                    xmlHttp.send();
+                    content2.item(i).textContent = xmlHttp.responseText;
+                    i += 1;
+                });
+            }
+            setTimeout("doUpdate()", 1000);
+        }
+        doUpdate();
     </script>
 </body>
 </html>
