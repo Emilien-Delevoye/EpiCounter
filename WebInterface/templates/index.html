@@ -25,30 +25,35 @@
     </script>
     <h2 id="grid"></h2>
     <script>
-        function change() {
-            var request = new XMLHttpRequest();
+        var request = new XMLHttpRequest();
 
-            request.open('GET', 'http://127.0.0.1:5000/rooms', true);
-            request.onload = function () {
-                var data = JSON.parse(this.response);
-                var i = 0;
+        request.open('GET', 'http://127.0.0.1:5000/rooms', true);
+        request.onload = function () {
+            var data = JSON.parse(this.response);
+            var i = 0;
 
-                if (request.status >= 200 && request.status < 400) {
-                    data.forEach((sub_data) => {
-                        var room = document.createElement('div');
-                        room.className = "room";
-                        room.id = 'room' + i;
-                        room.textContent = sub_data;
-                        document.getElementById("grid").appendChild(room);
-                        i += 1;
-                    })
-                } else {
-                    console.log('error');
-                }
+            if (request.status >= 200 && request.status < 400) {
+                data.forEach((sub_data) => {
+                    var room = document.createElement('h4');
+                    room.className = "room";
+                    room.id = sub_data + "_" + i;
+                    room.textContent = sub_data;
+                    var nb = document.createElement('h5');
+                    nb.className = "nb";
+                    nb.id = sub_data + "_room_" + i;
+                    var xmlHttp = new XMLHttpRequest();
+                    xmlHttp.open("GET", "http://127.0.0.1:5000/" + sub_data + '?format=json&current=true', false);
+                    xmlHttp.send();
+                    nb.textContent = xmlHttp.responseText;
+                    document.getElementById("grid").appendChild(room);
+                    document.getElementById("grid").appendChild(nb);
+                    i += 1;
+                })
+            } else {
+                console.log('error');
             }
-            request.send();
         }
-        change();
+        request.send();
     </script>
 </body>
 </html>
