@@ -25,8 +25,9 @@ class SaveData(Thread):
                 except FileNotFoundError:
                     pass
                     #Faire ce qu'il manque dans cette fonction, dans le cas d'un nouveau fichier
-                    with open("data/" + datetime.now().strftime("%d-%m-%Y") + ".json", "rw") as file:
+                    with open("data/" + datetime.now().strftime("%d-%m-%Y") + ".json", "w") as file:
                         print("pouet")
-                    file.close()
+                        file.write(str(json.dumps(data, indent=1)))
+                        file.close()
             elif datetime.now().second % 30 != 0 and current is True:
                 current = False

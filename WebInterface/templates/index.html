@@ -27,12 +27,17 @@
     <script>
         var request = new XMLHttpRequest();
 
-        request.open('GET', 'http://127.0.0.1:5000/rooms', true);
+        request.open('GET', 'http://127.0.0.1:5000/rooms', false);
         request.onload = function () {
             var data = JSON.parse(this.response);
             var i = 0;
 
+            console.log(request.status);
             if (request.status >= 200 && request.status < 400) {
+                var xmlHttp = new XMLHttpRequest();
+                xmlHttp.open("GET", "http://127.0.0.1:5000/?format=json&current=true", false);
+                xmlHttp.send();
+                var dataRooms = JSON.parse(xmlHttp.responseText);
                 data.forEach((sub_data) => {
                     var room = document.createElement('h4');
                     room.className = "room";
@@ -41,10 +46,7 @@
                     var nb = document.createElement('h5');
                     nb.className = "nb";
                     nb.id = sub_data + "_room";
-                    var xmlHttp = new XMLHttpRequest();
-                    xmlHttp.open("GET", "http://127.0.0.1:5000/" + sub_data + '?format=json&current=true', false);
-                    xmlHttp.send();
-                    nb.textContent = xmlHttp.responseText;
+                    nb.textContent = dataRooms[sub_data];
                     document.getElementById("grid").appendChild(room);
                     document.getElementById("grid").appendChild(nb);
                     i += 1;
@@ -64,11 +66,12 @@
             var i = 0;
             var content2 = document.getElementsByClassName("nb");
             if (content2.length !== 0) {
+                var httpRequest = new XMLHttpRequest();
+                httpRequest.open("GET", "http://127.0.0.1:5000/?format=json&current=true", false);
+                httpRequest.send();
+                var dataRooms = JSON.parse(httpRequest.responseText);
                 data.forEach((sub_data) => {
-                    var xmlHttp = new XMLHttpRequest();
-                    xmlHttp.open("GET", "http://127.0.0.1:5000/" + sub_data + '?format=json&current=true', false);
-                    xmlHttp.send();
-                    content2.item(i).textContent = xmlHttp.responseText;
+                    content2.item(i).textContent = dataRooms[sub_data];
                     i += 1;
                 });
             }

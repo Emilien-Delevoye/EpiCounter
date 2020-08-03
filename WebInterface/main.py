@@ -45,6 +45,8 @@ def create_plot(room_name, new_data):
 
 def return_data(params, room_name):
     new_data = {}
+    if params["current"] == "true":
+        return jsonify(server.database[room_name]["total"])
     data = read_file()
     if data is None:
         return "No data found"
@@ -88,7 +90,13 @@ def home():
     params = dict()
     params["format"] = request.values.get('format')
     params["current"] = request.values.get('current')
-    return render_template('index.html')
+    if params["format"] == "json" and params["current"] == "true":
+        new_base = {}
+        for i in server.database:
+            new_base[i] = server.database[i]["total"]
+        return jsonify(new_base)
+    else:
+        return render_template('index.html')
 
 
 def main():
