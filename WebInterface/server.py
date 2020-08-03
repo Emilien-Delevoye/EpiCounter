@@ -23,7 +23,6 @@ class Server(Thread):
             file.close()
         except FileNotFoundError:
             pass
-        print(self.database)
 
     def run(self):
         sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)

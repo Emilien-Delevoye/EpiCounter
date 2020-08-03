@@ -100,7 +100,6 @@ def home():
 
 
 def main():
-    init.read_config_file()
     server.start()
     savedata.start()
     app.run()
