@@ -1,6 +1,4 @@
 from flask import Flask, send_from_directory, jsonify, request, render_template
-import matplotlib.dates as mdates
-import matplotlib.pyplot as plt
 from datetime import datetime
 from WebInterface.server import Server
 from WebInterface.save_data import SaveData
@@ -49,7 +47,7 @@ def return_data(params, room_name):
         return render_template('room_display.html', Title=room_name)
 
 
-@app.route('/favicon.ico')
+@app.route('/favicon.ico', methods=['GET'])
 def favicon():
     return send_from_directory(os.path.join(app.root_path, 'static'), 'favicon.ico', mimetype='image/vnd.microsoft.icon')
 
@@ -64,7 +62,7 @@ def rooms_max():
     return jsonify(init.get_room_max())
 
 
-@app.route("/<room_name>/")
+@app.route("/<room_name>/", methods=['GET'])
 def room(room_name):
     params = dict()
     params["format"] = request.values.get('format')
@@ -75,7 +73,7 @@ def room(room_name):
         return "Wrong name"
 
 
-@app.route("/")
+@app.route("/", methods=['GET'])
 def home():
     params = dict()
     params["format"] = request.values.get('format')
