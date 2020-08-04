@@ -30,7 +30,6 @@ def read_file():
 
 def create_plot(room_name, new_data):
     times = [datetime.strptime(line, "%d/%m/%Y %H:%M:%S") for line in new_data.keys()]
-    print(new_data)
     values = [float(line) for line in new_data.values()]
     fig, ax = plt.subplots()
     ax.set_title(room_name + " : " + times[0].strftime("%d/%m/%Y"))
@@ -40,7 +39,7 @@ def create_plot(room_name, new_data):
     hfmt = mdates.DateFormatter('%H:%M:%S')
     ax.xaxis.set_major_formatter(hfmt)
     plt.gcf().autofmt_xdate()
-    plt.savefig(times[0].strftime("%d-%m-%Y") + ".png", dpi=300)
+    plt.savefig("templates/images/" + times[0].strftime("%d-%m-%Y") + ".png", dpi=300)
 
 
 def return_data(params, room_name):
@@ -54,14 +53,14 @@ def return_data(params, room_name):
         return "Room not found"
     for i in data.keys():
         new_data[i] = data[i][room_name]["total"]
-    if params["format"] != "json":
-        create_plot(room_name, new_data)
+    #if params["format"] != "json":
+    #    create_plot(room_name, new_data)
     if params["format"] == "json" and params["current"] is None:
         return jsonify(new_data)
     elif params["format"] == "json" and params["current"] == "true":
         return jsonify(new_data[list(data.keys())[-1]])
     else:
-        return "Work in progress"
+        return render_template('room_display.html', Title=room_name)
 
 
 @app.route('/favicon.ico')
@@ -72,6 +71,11 @@ def favicon():
 @app.route("/rooms", methods=['GET'])
 def rooms():
     return jsonify(init.get_room_names())
+
+
+@app.route("/rooms_max", methods=['GET'])
+def rooms_max():
+    return jsonify(init.get_room_max())
 
 
 @app.route("/<room_name>/")

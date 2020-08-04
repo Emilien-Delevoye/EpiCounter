@@ -13,8 +13,6 @@ class InitData:
             self.__dict__["2"][i] = self.__dict__["1"][i][0]
         for i in list(self.__dict__["1"].keys()):
             del self.__dict__["1"][i][0]
-        print("Dict : ", self.__dict__["1"])
-        print("Maxi : ", self.__dict__["2"])
 
     def get_dict(self):
         return self.__dict__["1"]
