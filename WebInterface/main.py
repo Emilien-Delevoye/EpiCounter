@@ -5,6 +5,7 @@ from datetime import datetime
 from WebInterface.server import Server
 from WebInterface.save_data import SaveData
 from WebInterface.init_data import InitData
+from WebInterface.create_plot import CreatePlot
 import json
 import os
 
@@ -17,6 +18,7 @@ except FileNotFoundError:
     exit(1)
 server = Server(init)
 savedata = SaveData(server)
+plot = CreatePlot(server)
 
 
 def read_file():
@@ -26,20 +28,6 @@ def read_file():
     except FileNotFoundError:
         return None
     return all_data
-
-
-def create_plot(room_name, new_data):
-    times = [datetime.strptime(line, "%d/%m/%Y %H:%M:%S") for line in new_data.keys()]
-    values = [float(line) for line in new_data.values()]
-    fig, ax = plt.subplots()
-    ax.set_title(room_name + " : " + times[0].strftime("%d/%m/%Y"))
-    ax.set_xlabel("Nombre de personnes")
-    ax.set_ylabel("Heure")
-    ax.plot_date(times, values, 'k-')
-    hfmt = mdates.DateFormatter('%H:%M:%S')
-    ax.xaxis.set_major_formatter(hfmt)
-    plt.gcf().autofmt_xdate()
-    plt.savefig("templates/images/" + times[0].strftime("%d-%m-%Y") + ".png", dpi=300)
 
 
 def return_data(params, room_name):
@@ -53,8 +41,6 @@ def return_data(params, room_name):
         return "Room not found"
     for i in data.keys():
         new_data[i] = data[i][room_name]["total"]
-    #if params["format"] != "json":
-    #    create_plot(room_name, new_data)
     if params["format"] == "json" and params["current"] is None:
         return jsonify(new_data)
     elif params["format"] == "json" and params["current"] == "true":
@@ -106,6 +92,7 @@ def home():
 def main():
     server.start()
     savedata.start()
+    plot.start()
     app.run()
 
 
