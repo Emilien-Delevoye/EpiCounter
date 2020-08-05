@@ -38,13 +38,17 @@ class CreatePlot(Thread):
         return all_data
 
     def __create_plot__(self, room_name, new_data):
+        max_rooms = self.server.init.get_room_max()
         times = [datetime.strptime(line, "%d/%m/%Y %H:%M:%S") for line in new_data.keys()]
         values = [float(line) for line in new_data.values()]
+        max_values = [float(max_rooms[room_name]) for i in values]
         fig, ax = plt.subplots()
         ax.set_title(room_name + " : " + times[0].strftime("%d/%m/%Y"))
         ax.set_ylabel("Nombre de personnes")
         ax.set_xlabel("Heure")
-        ax.plot_date(times, values, 'k-')
+        ax.plot_date(times, values, 'b-', label="Current")
+        ax.plot_date(times, max_values, 'r-', label="Maximum")
+        ax.legend()
         hfmt = mdates.DateFormatter('%H:%M:%S')
         ax.xaxis.set_major_formatter(hfmt)
         plt.gcf().autofmt_xdate()
