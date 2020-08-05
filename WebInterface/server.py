@@ -7,6 +7,7 @@ import json
 class Server(Thread):
     def __init__(self, init):
         Thread.__init__(self)
+        self.init = init
         self.__source__ = init.get_dict()
         self.database = {}
         for i in self.__source__:
