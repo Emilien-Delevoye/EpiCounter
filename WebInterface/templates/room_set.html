@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="/static/style.css"/>
+    <meta charset="UTF-8">
+    <title>Room set</title>
+</head>
+<body>
+    <h1>{{room_name}}</h1>
+    <h2 id="nb"></h2>
+    <script>
+        function doUpdate() {
+            var content = document.getElementById("nb");
+            var httpRequest = new XMLHttpRequest();
+            httpRequest.open("GET", "http://127.0.0.1:5000/?format=json&current=true", false);
+            httpRequest.send();
+            var dataRooms = JSON.parse(httpRequest.responseText);
+            content.textContent = dataRooms["{{room_name}}"]
+            setTimeout("doUpdate()", 1000);
+        }
+        doUpdate();
+    </script>
+    <center>
+        <input type="button" id="add" value="Add">
+        <script>
+            const button = document.getElementById('add');
+
+            button.addEventListener('click', async _ => {
+                try {
+                    await fetch('/add/{{room_name}}', {
+                        method: 'post',
+                    });
+                } catch(err) {
+                    console.error(`Error: ${err}`);
+                }
+                var content2 = document.getElementById("nb");
+                var httpRequest = new XMLHttpRequest();
+                httpRequest.open("GET", "http://127.0.0.1:5000/?format=json&current=true", false);
+                httpRequest.send();
+                var dataRooms = JSON.parse(httpRequest.responseText);
+                content2.textContent = dataRooms["{{room_name}}"]
+            });
+        </script>
+        <input type="button" id="remove" value="Remove">
+        <script>
+            const button2 = document.getElementById('remove');
+
+            button2.addEventListener('click', async _ => {
+                try {
+                    await fetch('/remove/{{room_name}}', {
+                        method: 'post',
+                    });
+                } catch(err) {
+                    console.error(`Error: ${err}`);
+                }
+                var content3 = document.getElementById("nb");
+                var httpRequest = new XMLHttpRequest();
+                httpRequest.open("GET", "http://127.0.0.1:5000/?format=json&current=true", false);
+                httpRequest.send();
+                var dataRooms = JSON.parse(httpRequest.responseText);
+                content3.textContent = dataRooms["{{room_name}}"]
+            });
+        </script>
+    </center>
+</body>
+</html>

@@ -7,6 +7,19 @@
 </head>
 <body>
     <h1>{{Title}}</h1>
+    <h2 id="nb"></h2>
+    <script>
+        function doUpdate() {
+            var content2 = document.getElementById("nb");
+            var httpRequest = new XMLHttpRequest();
+            httpRequest.open("GET", "http://127.0.0.1:5000/?format=json&current=true", false);
+            httpRequest.send();
+            var dataRooms = JSON.parse(httpRequest.responseText);
+            content2.textContent = dataRooms["{{Title}}"]
+            setTimeout("doUpdate()", 1000);
+        }
+        doUpdate();
+    </script>
     <center>
     <img
         src="/static/images/{{Title}}.png"

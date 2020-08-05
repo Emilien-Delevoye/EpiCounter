@@ -53,4 +53,5 @@ class CreatePlot(Thread):
         ax.xaxis.set_major_formatter(hfmt)
         plt.gcf().autofmt_xdate()
         plt.savefig("static/images/" + room_name + ".png", dpi=300)
+        plt.close()
         print("Plot for", room_name, "generated")

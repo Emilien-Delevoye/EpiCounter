@@ -62,6 +62,29 @@ def rooms_max():
     return jsonify(init.get_room_max())
 
 
+@app.route("/add/<room_name>", methods=['POST'])
+def room_add(room_name):
+    try:
+        server.database[room_name]["total"] += 1
+        return "Success"
+    except KeyError:
+        return "Error"
+
+
+@app.route("/remove/<room_name>", methods=['POST'])
+def room_remove(room_name):
+    try:
+        server.database[room_name]["total"] -= 1
+        return "Success"
+    except KeyError:
+        return "Error"
+
+
+@app.route("/<room_name>/set", methods=['GET'])
+def room_set(room_name):
+    return render_template("room_set.html", room_name=room_name)
+
+
 @app.route("/<room_name>/", methods=['GET'])
 def room(room_name):
     params = dict()
