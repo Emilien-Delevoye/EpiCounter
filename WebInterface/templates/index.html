@@ -32,7 +32,6 @@
             var data = JSON.parse(this.response);
             var i = 0;
 
-            console.log(request.status);
             if (request.status >= 200 && request.status < 400) {
                 var xmlHttp = new XMLHttpRequest();
                 xmlHttp.open("GET", "http://127.0.0.1:5000/?format=json&current=true", false);
@@ -46,7 +45,7 @@
                     var nb = document.createElement('h5');
                     nb.className = "nb";
                     nb.id = sub_data + "_room";
-                    nb.textContent = dataRooms[sub_data];
+                    nb.textContent = dataRooms[sub_data][0] + " / " + dataRooms[sub_data][1];
                     document.getElementById("grid").appendChild(room);
                     document.getElementById("grid").appendChild(nb);
                     i += 1;
@@ -71,7 +70,15 @@
                 httpRequest.send();
                 var dataRooms = JSON.parse(httpRequest.responseText);
                 data.forEach((sub_data) => {
-                    content2.item(i).textContent = dataRooms[sub_data];
+                    console.log(dataRooms[sub_data][0] + " " + sub_data)
+                    content2.item(i).textContent = dataRooms[sub_data][0] + " / " + dataRooms[sub_data][1];
+                    if (dataRooms[sub_data][0] >= dataRooms[sub_data][1]) {
+                        content2.item(i).style.color = "red";
+                    } else if (dataRooms[sub_data][0] + 5 >= dataRooms[sub_data][1]) {
+                        content2.item(i).style.color = "orange";
+                    } else {
+                        content2.item(i).style.color = "green";
+                    }
                     i += 1;
                 });
             }

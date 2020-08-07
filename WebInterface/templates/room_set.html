@@ -15,7 +15,14 @@
             httpRequest.open("GET", "http://127.0.0.1:5000/?format=json&current=true", false);
             httpRequest.send();
             var dataRooms = JSON.parse(httpRequest.responseText);
-            content.textContent = dataRooms["{{room_name}}"]
+            content.textContent = dataRooms["{{room_name}}"][0] + " / " + dataRooms["{{room_name}}"][1]
+            if (dataRooms["{{room_name}}"][0] >= dataRooms["{{room_name}}"][1]) {
+                content.style.color = "red";
+            } else if (dataRooms["{{room_name}}"][0] + 5 >= dataRooms["{{room_name}}"][1]) {
+                content.style.color = "orange";
+            } else {
+                content.style.color = "green";
+            }
             setTimeout("doUpdate()", 1000);
         }
         doUpdate();
@@ -38,7 +45,14 @@
                 httpRequest.open("GET", "http://127.0.0.1:5000/?format=json&current=true", false);
                 httpRequest.send();
                 var dataRooms = JSON.parse(httpRequest.responseText);
-                content2.textContent = dataRooms["{{room_name}}"]
+                content2.textContent = dataRooms["{{room_name}}"][0] + " / " + dataRooms["{{room_name}}"][1]
+                if (dataRooms["{{room_name}}"][0] >= dataRooms["{{room_name}}"][1]) {
+                    content2.style.color = "red";
+                } else if (dataRooms["{{room_name}}"][0] + 5 >= dataRooms["{{room_name}}"][1]) {
+                    content2.style.color = "orange";
+                } else {
+                    content2.style.color = "green";
+                }
             });
         </script>
         <input type="button" id="remove" value="Remove">
@@ -58,7 +72,14 @@
                 httpRequest.open("GET", "http://127.0.0.1:5000/?format=json&current=true", false);
                 httpRequest.send();
                 var dataRooms = JSON.parse(httpRequest.responseText);
-                content3.textContent = dataRooms["{{room_name}}"]
+                content3.textContent = dataRooms["{{room_name}}"][0] + " / " + dataRooms["{{room_name}}"][1]
+                if (dataRooms["{{room_name}}"][0] >= dataRooms["{{room_name}}"][1]) {
+                    content3.style.color = "red";
+                } else if (dataRooms["{{room_name}}"][0] + 5 >= dataRooms["{{room_name}}"][1]) {
+                    content3.style.color = "orange";
+                } else {
+                    content3.style.color = "green";
+                }
             });
         </script>
     </center>

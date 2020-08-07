@@ -103,9 +103,15 @@ def home():
     params["current"] = request.values.get('current')
     if params["format"] == "json" and params["current"] == "true":
         new_base = {}
-        for i in server.database:
-            new_base[i] = server.database[i]["total"]
-        return jsonify(new_base)
+        max_rooms = server.init.get_room_max()
+        try:
+            for i in server.database:
+                new_base[i] = list()
+                new_base[i].append(server.database[i]["total"])
+                new_base[i].append(max_rooms[i])
+            return jsonify(new_base)
+        except EOFError:
+            return jsonify({})
     else:
         return render_template('index.html')
 
