@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="/static/style.css"/>
+    <meta charset="UTF-8">
+    <title>Unauthorized</title>
+</head>
+<body>
+    <h1>Accès non autorisé</h1>
+    <div style="text-align: center;">
+        <img src="/static/738057587471286322.png">
+    </div>
+<script type="text/javascript">
+var no = 24;
+var delai = 10;
+var dx = new Array(), xp = new Array(), yp = new Array();
+var am = new Array(), stx = new Array(), sty = new Array();
+var i;
+larg_fenetre = (document.body.offsetWidth<window.innerWidth)? window.innerWidth:document.body.offsetWidth;
+haut_fenetre = (document.body.offsetHeight<window.innerHeight)? window.innerHeight:document.body.offsetHeight;
+
+for (i = 0; i < no; i++) {
+    dx[i] = 0;
+    xp[i] = Math.random()*(larg_fenetre-40);
+    yp[i] = Math.random()*haut_fenetre;
+    am[i] = Math.random()*20;
+    stx[i] = 0.02 + Math.random()/10;
+    sty[i] = 0.7 + Math.random();
+
+    obj = document.getElementsByTagName('body')[0];
+    para = document.createElement("img");
+    para.setAttribute("src","/static/kirby.gif");
+    para.setAttribute("id","dot" + i);
+    para.style.position = "absolute";
+    para.style.zIndex = "2";
+    obj.appendChild(para);
+}
+
+function vDeOuf() {
+    for (i = 0; i < no; i++) {
+        dx[i] += stx[i];
+        yp[i] += sty[i];
+        if (yp[i] > haut_fenetre-50) {
+            xp[i] = Math.random()*(larg_fenetre-am[i]-40);
+            yp[i] = 0;
+        }
+        document.getElementById("dot"+i).style.top = yp[i] + "px";
+        document.getElementById("dot"+i).style.left = xp[i] + am[i]*Math.sin(dx[i]) + "px";
+    }
+    setTimeout(vDeOuf, delai);
+}
+
+vDeOuf();
+</script>
+</body>
+</html>

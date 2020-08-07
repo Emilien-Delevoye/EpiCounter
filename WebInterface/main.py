@@ -84,6 +84,11 @@ def logout():
     return redirect("http://127.0.0.1:5000")
 
 
+@app.route("/unauthorized/")
+def unauthorized():
+    return render_template("unauthorized.html")
+
+
 @app.route("/rooms", methods=['GET'])
 def rooms():
     return jsonify(init.get_room_names())
@@ -98,6 +103,8 @@ def rooms_max():
 def room_set(room_name):
     params = dict()
     params["newval"] = request.values.get('newval')
+    if session["logged_in"] is not True:
+        return redirect("http://127.0.0.1:5000/unauthorized")
     try:
         if params["newval"] is not None:
             server.database[room_name]["total"] = int(params["newval"])
