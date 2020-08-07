@@ -63,6 +63,7 @@ def login():
 def dologin():
     if check_login(request.form["username"], request.form["password"]):
         session["logged_in"] = True
+        session["username"] = request.form["username"]
         return redirect("http://127.0.0.1:5000")
     else:
         return "ko"
@@ -126,10 +127,9 @@ def home():
             return jsonify({})
     else:
         if session["logged_in"] is True:
-            return render_template('index.html', statut="logout", statut_disp="Logout")
+            return render_template('index.html', statut="logout", statut_disp="Logout", name=session["username"])
         else:
-            return render_template('index.html', statut="login", statut_disp="Login")
-
+            return render_template('index.html', statut="login", statut_disp="Login", name="")
 
 
 def main():

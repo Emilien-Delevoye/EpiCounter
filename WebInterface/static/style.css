@@ -7,17 +7,20 @@ header {height: 40px; text-align: center; margin: 0;}
 .room {color: white; text-decoration: none; outline: none}
 .epicounter_title {font-size: 30px}
 .header_custom {display: inline-block}
+
 section {
     border-bottom-width:1px;
     border-bottom-color: white;
     border-bottom-style: ridge;
 }
+
 ul {
     padding:0;
     margin:0;
     list-style-type:none;
 }
-ul li a {
+
+ul li .login_button {
     display:block;
     float:right;
     width:100px;
@@ -27,10 +30,12 @@ ul li a {
     padding:5px;
     border: 1px solid;
 }
+
 ul li a:hover {
     background-color:#D3D3D3;
     border-color:#696969 #DCDCDC #DCDCDC #696969;
 }
+
 .conteneur{
     display: flex;
     flex-direction: row;
@@ -45,4 +50,15 @@ ul li a:hover {
     position:absolute;
     right:20px;
     top: 23px;
+}
+
+ul li .login_name {
+    text-align: center;
+    position: absolute;
+    right: 140px;
+    top: 5px;
+    color: white;
+    text-decoration: none;
+    outline: none;
+    white-space: nowrap;
 }
