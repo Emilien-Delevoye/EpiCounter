@@ -1,4 +1,4 @@
-from flask import Flask, send_from_directory, jsonify, request, render_template, redirect
+from flask import Flask, send_from_directory, jsonify, request, render_template, redirect, session
 from datetime import datetime
 from WebInterface.server import Server
 from WebInterface.save_data import SaveData
@@ -9,6 +9,7 @@ import os
 
 
 app = Flask(__name__)
+app.secret_key = "admin"
 init = InitData()
 try:
     init.read_config_file()
@@ -50,6 +51,26 @@ def return_data(params, room_name):
 @app.route('/favicon.ico', methods=['GET'])
 def favicon():
     return send_from_directory(os.path.join(app.root_path, 'static'), 'favicon.ico', mimetype='image/vnd.microsoft.icon')
+
+
+@app.route("/login/")
+def login():
+    return render_template("login.html")
+
+
+@app.route("/dologin", methods=['POST'])
+def dologin():
+    if request.form["password"] == "password" and request.form["username"] == "admin":
+        session["logged_in"] = True
+        return redirect("http://127.0.0.1:5000")
+    else:
+        return home()
+
+
+@app.route("/logout/")
+def logout():
+    session["logged_in"] = False
+    return home()
 
 
 @app.route("/rooms", methods=['GET'])
