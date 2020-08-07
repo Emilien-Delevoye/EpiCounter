@@ -7,6 +7,34 @@
 </head>
 <body>
     <h1>{{Name}}</h1>
-    <a></a>
+    <br><br>
+    <h2 id="grid"></h2>
+    <script>
+        var request = new XMLHttpRequest();
+
+        request.open('GET', 'http://127.0.0.1:5000/rooms', false);
+        request.onload = function () {
+            var data = JSON.parse(this.response);
+            var i = 0;
+
+            console.log(data);
+            if (request.status >= 200 && request.status < 400) {
+                data.forEach((sub_data) => {
+                    console.log(sub_data);
+                    var room = document.createElement('a');
+                    room.className = "room";
+                    room.id = sub_data + "_" + i;
+                    room.href = "http://127.0.0.1:5000/" + sub_data + "/set";
+                    room.textContent = sub_data;
+                    document.getElementById("grid").appendChild(room);
+                    document.getElementById("grid").appendChild(document.createElement('br'));
+                    document.getElementById("grid").appendChild(document.createElement('br'));
+                })
+            } else {
+                console.log('error');
+            }
+        }
+        request.send();
+    </script>
 </body>
 </html>
