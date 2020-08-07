@@ -1,4 +1,4 @@
-from flask import Flask, send_from_directory, jsonify, request, render_template
+from flask import Flask, send_from_directory, jsonify, request, render_template, redirect
 from datetime import datetime
 from WebInterface.server import Server
 from WebInterface.save_data import SaveData
@@ -82,6 +82,14 @@ def room_remove(room_name):
 
 @app.route("/<room_name>/set", methods=['GET'])
 def room_set(room_name):
+    params = dict()
+    params["newval"] = request.values.get('newval')
+    try:
+        if params["newval"] is not None:
+            server.database[room_name]["total"] = int(params["newval"])
+            return redirect("http://127.0.0.1:5000/" + room_name + "/set", code=200)
+    except ValueError:
+        return "Wrong parameter \"newval\""
     return render_template("room_set.html", room_name=room_name)
 
 

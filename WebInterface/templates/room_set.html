@@ -28,59 +28,22 @@
         doUpdate();
     </script>
     <center>
-        <input type="button" id="add" value="Add">
+        <input id="inputNB" type="number" step="1" value="0" min="0">
         <script>
-            const button = document.getElementById('add');
-
-            button.addEventListener('click', async _ => {
-                try {
-                    await fetch('/add/{{room_name}}', {
-                        method: 'post',
-                    });
-                } catch(err) {
-                    console.error(`Error: ${err}`);
-                }
-                var content2 = document.getElementById("nb");
-                var httpRequest = new XMLHttpRequest();
-                httpRequest.open("GET", "http://127.0.0.1:5000/?format=json&current=true", false);
-                httpRequest.send();
-                var dataRooms = JSON.parse(httpRequest.responseText);
-                content2.textContent = dataRooms["{{room_name}}"][0] + " / " + dataRooms["{{room_name}}"][1]
-                if (dataRooms["{{room_name}}"][0] >= dataRooms["{{room_name}}"][1]) {
-                    content2.style.color = "red";
-                } else if (dataRooms["{{room_name}}"][0] + 5 >= dataRooms["{{room_name}}"][1]) {
-                    content2.style.color = "orange";
-                } else {
-                    content2.style.color = "green";
-                }
-            });
+            var httpRequest = new XMLHttpRequest();
+            httpRequest.open("GET", "http://127.0.0.1:5000/{{room_name}}?format=json&current=true", false);
+            httpRequest.send();
+            var inputNB = document.getElementById("inputNB");
+            inputNB.value = parseInt(httpRequest.responseText);
         </script>
-        <input type="button" id="remove" value="Remove">
+        <form>
+            <input id="validation" type="button" value="Validation" onclick="sendUpdate()">
+        </form>
         <script>
-            const button2 = document.getElementById('remove');
-
-            button2.addEventListener('click', async _ => {
-                try {
-                    await fetch('/remove/{{room_name}}', {
-                        method: 'post',
-                    });
-                } catch(err) {
-                    console.error(`Error: ${err}`);
-                }
-                var content3 = document.getElementById("nb");
-                var httpRequest = new XMLHttpRequest();
-                httpRequest.open("GET", "http://127.0.0.1:5000/?format=json&current=true", false);
-                httpRequest.send();
-                var dataRooms = JSON.parse(httpRequest.responseText);
-                content3.textContent = dataRooms["{{room_name}}"][0] + " / " + dataRooms["{{room_name}}"][1]
-                if (dataRooms["{{room_name}}"][0] >= dataRooms["{{room_name}}"][1]) {
-                    content3.style.color = "red";
-                } else if (dataRooms["{{room_name}}"][0] + 5 >= dataRooms["{{room_name}}"][1]) {
-                    content3.style.color = "orange";
-                } else {
-                    content3.style.color = "green";
-                }
-            });
+            function sendUpdate() {
+                var inputNB = document.getElementById("inputNB")
+                document.location.href = "http://127.0.0.1:5000/{{room_name}}/set?newval=" + inputNB.value;
+            }
         </script>
     </center>
 </body>
