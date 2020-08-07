@@ -4,6 +4,7 @@ from WebInterface.server import Server
 from WebInterface.save_data import SaveData
 from WebInterface.init_data import InitData
 from WebInterface.create_plot import CreatePlot
+from WebInterface.login_check import check_login
 import json
 import os
 
@@ -60,11 +61,11 @@ def login():
 
 @app.route("/dologin", methods=['POST'])
 def dologin():
-    if request.form["password"] == "password" and request.form["username"] == "admin":
+    if check_login(request.form["username"], request.form["password"]):
         session["logged_in"] = True
         return redirect("http://127.0.0.1:5000")
     else:
-        return home()
+        return "ko"
 
 
 @app.route("/logout/")
@@ -124,7 +125,11 @@ def home():
         except EOFError:
             return jsonify({})
     else:
-        return render_template('index.html')
+        if session["logged_in"] is True:
+            return render_template('index.html', statut="logout", statut_disp="Logout")
+        else:
+            return render_template('index.html', statut="login", statut_disp="Login")
+
 
 
 def main():

@@ -5,8 +5,20 @@
     <meta charset="UTF-8">
     <title>Home EpiCounter</title>
 </head>
+
 <body>
-    <h1>EpiCounter</h1>
+    <section>
+        <div class="conteneur">
+            <h1 id="epicounter_title">EpiCounter</h1>
+            <div class="item" style="float: right">
+                <ul>
+                    <li>
+                        <a href="/{{statut}}">{{statut_disp}}</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </section>
     <h2 id="my-hour"></h2>
     <script>
         function getTime() {

@@ -1,5 +1,48 @@
 body {background-color: black; color: white}
+span {font-size: 40px}
 h1 {text-align: center}
 h2 {text-align: center}
 div {text-align: center}
-a {color: white; text-decoration: none; outline: none}
+header {height: 40px; text-align: center; margin: 0;}
+.room {color: white; text-decoration: none; outline: none}
+.epicounter_title {font-size: 30px}
+.header_custom {display: inline-block}
+section {
+    border-bottom-width:1px;
+    border-bottom-color: white;
+    border-bottom-style: ridge;
+}
+ul {
+    padding:0;
+    margin:0;
+    list-style-type:none;
+}
+ul li a {
+    display:block;
+    float:right;
+    width:100px;
+    color:white;
+    text-decoration:none;
+    text-align:center;
+    padding:5px;
+    border: 1px solid;
+}
+ul li a:hover {
+    background-color:#D3D3D3;
+    border-color:#696969 #DCDCDC #DCDCDC #696969;
+}
+.conteneur{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.item{
+    text-align: center;
+    flex-direction: row;
+    position:absolute;
+    right:20px;
+    top: 23px;
+}
