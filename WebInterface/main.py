@@ -72,6 +72,7 @@ def dologin():
 @app.route("/logout/")
 def logout():
     session["logged_in"] = False
+    session.pop("username", None)
     return home()
 
 
