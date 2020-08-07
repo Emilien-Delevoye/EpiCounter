@@ -38,9 +38,10 @@
                 xmlHttp.send();
                 var dataRooms = JSON.parse(xmlHttp.responseText);
                 data.forEach((sub_data) => {
-                    var room = document.createElement('h4');
+                    var room = document.createElement('a');
                     room.className = "room";
                     room.id = sub_data + "_" + i;
+                    room.href = "http://127.0.0.1:5000/" + sub_data;
                     room.textContent = sub_data;
                     var nb = document.createElement('h5');
                     nb.className = "nb";

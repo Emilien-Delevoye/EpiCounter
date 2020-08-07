@@ -2,3 +2,4 @@ body {background-color: black; color: white}
 h1 {text-align: center}
 h2 {text-align: center}
 div {text-align: center}
+a {color: white; text-decoration: none; outline: none}
