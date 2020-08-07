@@ -69,11 +69,19 @@ def dologin():
         return "ko"
 
 
+@app.route("/profile/")
+def profile():
+    if session["logged_in"] is not True:
+        return redirect("http://127.0.0.1:5000/login/")
+    else:
+        return render_template("profile.html", Name=session["username"])
+
+
 @app.route("/logout/")
 def logout():
     session["logged_in"] = False
     session.pop("username", None)
-    return home()
+    return redirect("http://127.0.0.1:5000")
 
 
 @app.route("/rooms", methods=['GET'])
