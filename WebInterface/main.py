@@ -12,6 +12,7 @@ import os
 
 app = Flask(__name__)
 app.secret_key = "admin"
+app.url_map.strict_slashes = False
 init = InitData()
 try:
     init.read_config_file()
@@ -125,6 +126,8 @@ def rooms_max():
 
 @app.route("/<room_name>/set", methods=['GET'])
 def room_set(room_name):
+    if room_name not in server.database:
+        return "Room not found"
     params = dict()
     params["newval"] = request.values.get('newval')
     if "logged_in" not in session or session["logged_in"] is not True:
