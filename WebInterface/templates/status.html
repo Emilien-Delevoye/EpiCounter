@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="/static/style.css"/>
+    <meta charset="UTF-8">
+    <title>Status</title>
+</head>
+<body>
+    <h1>System status</h1>
+    <h2 id="grid"></h2>
+    <script>
+        var request = new XMLHttpRequest();
+
+        request.open('GET', 'http://127.0.0.1:5000/rooms', false);
+        request.onload = function () {
+            var data = JSON.parse(this.response);
+            var i = 0;
+
+            if (request.status >= 200 && request.status < 400) {
+                var xmlHttp = new XMLHttpRequest();
+                xmlHttp.open("GET", "http://127.0.0.1:5000/status?format=json", false);
+                xmlHttp.send();
+                var data2 = JSON.parse(xmlHttp.responseText);
+                data.forEach((sub_data) => {
+                    for (var k = 1; data2[sub_data][k] !== undefined; k++) {
+                        var room = document.createElement('h3');
+                        room.className = "door";
+                        room.id = sub_data + "_" + i;
+                        room.textContent = sub_data + " " + k;
+                        if (data2[sub_data][k] === false)
+                            room.style.color = "red";
+                        else
+                            room.style.color = "green";
+                        document.getElementById("grid").appendChild(room);
+                        i += 1;
+                    }
+                })
+            } else {
+                console.log('error');
+            }
+        }
+        request.send();
+    </script>
+    <script>
+        var request = new XMLHttpRequest();
+        request.open("GET", "http://127.0.0.1:5000/rooms", false);
+        request.send();
+        var data = JSON.parse(request.responseText);
+        function doUpdate() {
+            var i = 0;
+            var content2 = document.getElementsByClassName("door");
+            if (content2.length !== 0) {
+                var httpRequest = new XMLHttpRequest();
+                httpRequest.open("GET", "http://127.0.0.1:5000/status?format=json", false);
+                httpRequest.send();
+                var data2 = JSON.parse(httpRequest.responseText);
+                data.forEach((sub_data) => {
+                    for (var k = 1; data2[sub_data][k] !== undefined; k++) {
+                        var room = content2[i];
+                        room.className = "door";
+                        room.id = sub_data + "_" + i;
+                        room.textContent = sub_data + " " + k;
+                        if (data2[sub_data][k] === false)
+                            room.style.color = "red";
+                        else
+                            room.style.color = "green";
+                        i += 1;
+                    }
+                });
+            }
+            setTimeout("doUpdate()", 1000);
+        }
+        doUpdate();
+    </script>
+</body>
+</html>

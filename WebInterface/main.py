@@ -6,6 +6,7 @@ from WebInterface.init_data import InitData
 from WebInterface.create_plot import CreatePlot
 from WebInterface.login_check import check_login
 import json
+import time
 import os
 
 
@@ -16,6 +17,7 @@ try:
     init.read_config_file()
 except FileNotFoundError:
     exit(1)
+print(init.get_dict())
 server = Server(init)
 savedata = SaveData(server)
 plot = CreatePlot(server)
@@ -30,7 +32,7 @@ def read_file():
     return all_data
 
 
-def return_data(params, room_name):
+def return_data(params, room_name, account):
     new_data = {}
     if params["current"] == "true":
         return jsonify(server.database[room_name]["total"])
@@ -46,7 +48,7 @@ def return_data(params, room_name):
     elif params["format"] == "json" and params["current"] == "true":
         return jsonify(new_data[list(data.keys())[-1]])
     else:
-        return render_template('room_display.html', Title=room_name)
+        return render_template('room_display.html', Title=room_name, account=account)
 
 
 @app.route('/favicon.ico', methods=['GET'])
@@ -80,6 +82,25 @@ def profile():
         return redirect("http://127.0.0.1:5000/login")
 
 
+@app.route("/status")
+def status():
+    if "logged_in" not in session or session["logged_in"] is not True:
+        return redirect("http://127.0.0.1:5000/unauthorized")
+    else:
+        if request.values.get('format') == "json":
+            output = {}
+            for i in server.database_status:
+                output[i] = {}
+                for j in server.database_status[i]:
+                    if server.database_status[i][j] is None or datetime.fromtimestamp(time.time() - 30) > server.database_status[i][j]:
+                        output[i][j] = False
+                    else:
+                        output[i][j] = True
+            return jsonify(output)
+        else:
+            return render_template("status.html")
+
+
 @app.route("/logout/")
 def logout():
     session["logged_in"] = False
@@ -106,12 +127,12 @@ def rooms_max():
 def room_set(room_name):
     params = dict()
     params["newval"] = request.values.get('newval')
-    if session["logged_in"] is not True:
+    if "logged_in" not in session or session["logged_in"] is not True:
         return redirect("http://127.0.0.1:5000/unauthorized")
     try:
         if params["newval"] is not None:
             server.database[room_name]["total"] = int(params["newval"])
-            return redirect("http://127.0.0.1:5000/" + room_name + "/set", code=200)
+            return redirect("http://127.0.0.1:5000/" + room_name + "/set")
     except ValueError:
         return "Wrong parameter \"newval\""
     return render_template("room_set.html", room_name=room_name)
@@ -123,7 +144,9 @@ def room(room_name):
     params["format"] = request.values.get('format')
     params["current"] = request.values.get('current')
     try:
-        return return_data(params, str(room_name))
+        if "logged_in" in session and session["logged_in"] is True:
+            return return_data(params, str(room_name), "Set number")
+        return return_data(params, str(room_name), "")
     except:
         return "Wrong name"
 
@@ -145,7 +168,7 @@ def home():
         except EOFError:
             return jsonify({})
     else:
-        if session["logged_in"] is True:
+        if "logged_in" in session and session["logged_in"] is True:
             return render_template('index.html', statut="logout", statut_disp="Logout", name=session["username"])
         else:
             return render_template('index.html', statut="login", statut_disp="Login", name="")

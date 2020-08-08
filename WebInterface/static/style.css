@@ -4,6 +4,7 @@ h1 {text-align: center}
 h2 {text-align: center}
 div {text-align: center}
 header {height: 40px; text-align: center; margin: 0;}
+a {color: white; text-decoration: none; outline: none}
 .room {color: white; text-decoration: none; outline: none}
 .epicounter_title {font-size: 30px}
 .header_custom {display: inline-block}

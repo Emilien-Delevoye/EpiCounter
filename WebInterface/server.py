@@ -10,11 +10,14 @@ class Server(Thread):
         self.init = init
         self.__source__ = init.get_dict()
         self.database = {}
+        self.database_status = {}
         for i in self.__source__:
             self.database[i] = dict()
             self.database[i]["total"] = 0
+            self.database_status[i] = dict()
             for j in self.__source__[i]:
                 self.database[i][j] = [0, 0]
+                self.database_status[i][j] = None
         try:
             with open("data/" + datetime.now().strftime("%d-%m-%Y") + ".json", "r") as file:
                 tmp = json.load(file)
@@ -45,6 +48,9 @@ class Server(Thread):
                     elif data[2] == "-1" and self.database[data[0]]["total"] > 0:
                         self.database[data[0]][data[1]][1] += 1
                         self.database[data[0]]["total"] -= 1
+                    elif data[2] == "ping":
+                        self.database_status[data[0]][data[1]] = datetime.now()
+                        print("pouet")
                     else:
                         raise ValueError
             except:
