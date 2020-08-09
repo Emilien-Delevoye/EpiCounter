@@ -11,12 +11,13 @@ unsigned long previous_b = 0;
 bool previous_state_a = false;
 bool previous_state_b = false;
 
-char ssid[] = "Pointe de Chesery";
-char pass[] = "LaChauxdesRosees";
+char ssid[] = "EpitechRooms";
+char pass[] = "Epitech2023";
 int status = WL_IDLE_STATUS;
 
+
 WiFiClient client;
-IPAddress ip(192, 168, 1, 2);
+byte ip[] = {192, 168, 4, 12};
 
 void setup() {
     Serial.begin(9600);
@@ -37,7 +38,8 @@ void setup() {
         status = WiFi.begin(ssid, pass);
         delay(5000);
     }
-    while (client.connect(ip, 4242) == 0);
+    client.connect(ip, 4242);
+    client.print("Cray|1|ping\n");
     digitalWrite(6, HIGH);
 }
 
@@ -101,17 +103,17 @@ void loop() {
         if (previous_a < previous_b && pos != 1) {
             digitalWrite(5, HIGH);
             digitalWrite(10, LOW);
-            client.println("Cray_1|-1");
             pos = 1;
             nb += 1;
             Serial.println(nb);
+            client.print("Cray|1|+1");
         } else if (previous_a > previous_b && pos != 2) {
             digitalWrite(10, HIGH);
             digitalWrite(5, LOW);
-            client.println("Cray_1|+1");
             pos = 2;
             nb -= 1;
             Serial.println(nb);
+            client.print("Cray|1|-1");
         }
     } else {
         pos = 0;

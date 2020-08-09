@@ -36,7 +36,7 @@ class Server(Thread):
         sock.setblocking(False)
         inputs = [sock]
         while True:
-            #try:
+            try:
                 readble, writable, exceptional = select.select(inputs, [], inputs)
                 for s in readble:
                     if s is sock:
@@ -53,8 +53,10 @@ class Server(Thread):
                 for s in exceptional:
                     inputs.remove(s)
                     s.close()
-            #except:
-            #    print("Message ignoré (Erreur de réception)")
+            except ValueError:
+                print("Message ignoré (Erreur de réception)")
+            except ConnectionResetError:
+                print("Client disconnected")
 
     def parse_data(self, data):
         data = data.decode("utf-8")
@@ -63,7 +65,7 @@ class Server(Thread):
         if len(data) != 3:
             raise ValueError
         if data[0] not in self.database.keys() or data[1] not in self.database[data[0]].keys():
-            raise Exception
+            raise ValueError
         else:
             if data[2] == "+1":
                 self.database[data[0]][data[1]][0] += 1
