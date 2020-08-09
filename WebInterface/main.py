@@ -19,6 +19,8 @@ try:
 except FileNotFoundError:
     exit(1)
 print(init.get_dict())
+address = "http://0.0.0.0"
+port = ":4243"
 server = Server(init)
 savedata = SaveData(server)
 plot = CreatePlot(server)
@@ -67,7 +69,7 @@ def dologin():
     if check_login(request.form["username"], request.form["password"]):
         session["logged_in"] = True
         session["username"] = request.form["username"]
-        return redirect("http://127.0.0.1:5000")
+        return redirect(address + port)
     else:
         return "ko"
 
@@ -76,17 +78,17 @@ def dologin():
 def profile():
     try:
         if session["logged_in"] is not True:
-            return redirect("http://127.0.0.1:5000/login/")
+            return redirect(address + port + "/login/")
         else:
             return render_template("profile.html", Name=session["username"])
     except KeyError:
-        return redirect("http://127.0.0.1:5000/login")
+        return redirect(address + port + "/login")
 
 
 @app.route("/status")
 def status():
     if "logged_in" not in session or session["logged_in"] is not True:
-        return redirect("http://127.0.0.1:5000/unauthorized")
+        return redirect(address + port + "/unauthorized")
     else:
         if request.values.get('format') == "json":
             output = {}
@@ -106,7 +108,7 @@ def status():
 def logout():
     session["logged_in"] = False
     session.pop("username", None)
-    return redirect("http://127.0.0.1:5000")
+    return redirect(address + port)
 
 
 @app.route("/unauthorized/")
@@ -131,11 +133,11 @@ def room_set(room_name):
     params = dict()
     params["newval"] = request.values.get('newval')
     if "logged_in" not in session or session["logged_in"] is not True:
-        return redirect("http://127.0.0.1:5000/unauthorized")
+        return redirect(address + port + "/unauthorized")
     try:
         if params["newval"] is not None:
             server.database[room_name]["total"] = int(params["newval"])
-            return redirect("http://127.0.0.1:5000/" + room_name + "/set")
+            return redirect(address + port + room_name + "/set")
     except ValueError:
         return "Wrong parameter \"newval\""
     return render_template("room_set.html", room_name=room_name)
