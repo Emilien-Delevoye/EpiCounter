@@ -16,7 +16,8 @@ class CreatePlot(Thread):
         current = False
         while True:
             if (datetime.now().minute % self.minute_bf_calc) == 0 and datetime.now().second == 10 and current is False:
-                print("Start room generation")
+                current = True
+                print("Start plot generation")
                 data = self.__read_file__()
                 if data is not None:
                     new_data = {}
@@ -25,6 +26,7 @@ class CreatePlot(Thread):
                             new_data[i] = data[i][j]["total"]
                         self.__create_plot__(j, new_data)
                         new_data = {}
+                print("End plot generation")
             elif (datetime.now().minute % self.minute_bf_calc) != 0 and datetime.now().second != 10 and current is True:
                 current = False
 

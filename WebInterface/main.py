@@ -19,7 +19,6 @@ try:
     init.read_config_file()
 except FileNotFoundError:
     exit(1)
-print(init.get_dict())
 address = "http://0.0.0.0"
 port = ":4243"
 server = Server(init)
