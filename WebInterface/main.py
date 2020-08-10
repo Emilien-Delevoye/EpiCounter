@@ -5,6 +5,7 @@ from WebInterface.save_data import SaveData
 from WebInterface.init_data import InitData
 from WebInterface.create_plot import CreatePlot
 from WebInterface.login_check import check_login
+from WebInterface.use_functions import get_file_name
 import json
 import time
 import os
@@ -28,7 +29,7 @@ plot = CreatePlot(server)
 
 def read_file():
     try:
-        with open("data/" + datetime.now().strftime("%d-%m-%Y") + ".json", "r") as file:
+        with open("data/" + get_file_name(), "r") as file:
             all_data = json.load(file)
     except FileNotFoundError:
         return None

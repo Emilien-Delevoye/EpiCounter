@@ -1,3 +1,4 @@
+from WebInterface.use_functions import get_file_name
 from threading import Thread
 from datetime import datetime
 import matplotlib.dates as mdates
@@ -14,7 +15,7 @@ class CreatePlot(Thread):
     def run(self):
         current = False
         while True:
-            if datetime.now().minute % self.minute_bf_calc == 0 and datetime.now().second == 10 and current is False:
+            if (datetime.now().minute % self.minute_bf_calc) == 0 and datetime.now().second == 10 and current is False:
                 print("Start room generation")
                 data = self.__read_file__()
                 if data is not None:
@@ -24,13 +25,13 @@ class CreatePlot(Thread):
                             new_data[i] = data[i][j]["total"]
                         self.__create_plot__(j, new_data)
                         new_data = {}
-            elif datetime.now().minute % self.minute_bf_calc != 0 and datetime.now().second != 10 and current is True:
+            elif (datetime.now().minute % self.minute_bf_calc) != 0 and datetime.now().second != 10 and current is True:
                 current = False
 
 
     def __read_file__(self):
         try:
-            with open("data/" + datetime.now().strftime("%d-%m-%Y") + ".json", "r") as file:
+            with open("data/" + get_file_name(), "r") as file:
                 all_data = json.load(file)
             file.close()
         except FileNotFoundError:

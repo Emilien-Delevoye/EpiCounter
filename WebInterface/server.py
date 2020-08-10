@@ -1,3 +1,4 @@
+from WebInterface.use_functions import get_file_name
 from datetime import datetime
 from threading import Thread
 import socket
@@ -20,7 +21,7 @@ class Server(Thread):
                 self.database[i][j] = [0, 0]
                 self.database_status[i][j] = None
         try:
-            with open("data/" + datetime.now().strftime("%d-%m-%Y") + ".json", "r") as file:
+            with open("data/" + get_file_name(), "r") as file:
                 tmp = json.load(file)
                 last = tmp[list(tmp.keys())[-1]]
                 for i in last:
