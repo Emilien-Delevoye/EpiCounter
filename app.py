@@ -1,26 +1,42 @@
 from flask import Flask, send_from_directory, jsonify, request, render_template, redirect, session
-from datetime import datetime
+from datetime import datetime as d_time2
+import datetime as d_time
 from WebInterface.server import Server
 from WebInterface.save_data import SaveData
 from WebInterface.init_data import InitData
 from WebInterface.create_plot import CreatePlot
 from WebInterface.login_check import check_login
-from WebInterface.use_functions import get_file_name
+from flask_sqlalchemy import SQLAlchemy
 import json
 import time
 import os
 
 
+# Création de l'app
 app = Flask(__name__)
 app.secret_key = "admin"
 app.url_map.strict_slashes = False
+
+# Connexion à la base postgresql
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql+psycopg2://postgres:postgres@db/tasks'
+db = SQLAlchemy(app)
+
+# Table temporaire (pour tester)
+class Test(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    content = db.Column(db.String(200), nullable=False)
+    date_created = db.Column(db.DateTime, default=d_time.datetime.utcnow)
+
+    def __repr__(self):
+        return '<id: %r>' % self.id
+
+
 init = InitData()
 try:
     init.read_config_file()
 except FileNotFoundError:
     exit(1)
-address = "http://0.0.0.0"
-port = ":4243"
+print(init.get_dict())
 server = Server(init)
 savedata = SaveData(server)
 plot = CreatePlot(server)
@@ -28,7 +44,7 @@ plot = CreatePlot(server)
 
 def read_file():
     try:
-        with open("data/" + get_file_name(), "r") as file:
+        with open("data/" + datetime.now().strftime("%d-%m-%Y") + ".json", "r") as file:
             all_data = json.load(file)
     except FileNotFoundError:
         return None
@@ -69,7 +85,7 @@ def dologin():
     if check_login(request.form["username"], request.form["password"]):
         session["logged_in"] = True
         session["username"] = request.form["username"]
-        return redirect(address + port)
+        return redirect("http://127.0.0.1:5000")
     else:
         return "ko"
 
@@ -78,17 +94,17 @@ def dologin():
 def profile():
     try:
         if session["logged_in"] is not True:
-            return redirect(address + port + "/login/")
+            return redirect("http://127.0.0.1:5000/login/")
         else:
             return render_template("profile.html", Name=session["username"])
     except KeyError:
-        return redirect(address + port + "/login")
+        return redirect("http://127.0.0.1:5000/login")
 
 
 @app.route("/status")
 def status():
     if "logged_in" not in session or session["logged_in"] is not True:
-        return redirect(address + port + "/unauthorized")
+        return redirect("http://127.0.0.1:5000/unauthorized")
     else:
         if request.values.get('format') == "json":
             output = {}
@@ -108,7 +124,7 @@ def status():
 def logout():
     session["logged_in"] = False
     session.pop("username", None)
-    return redirect(address + port)
+    return redirect("http://127.0.0.1:5000")
 
 
 @app.route("/unauthorized/")
@@ -133,11 +149,11 @@ def room_set(room_name):
     params = dict()
     params["newval"] = request.values.get('newval')
     if "logged_in" not in session or session["logged_in"] is not True:
-        return redirect(address + port + "/unauthorized")
+        return redirect("http://127.0.0.1:5000/unauthorized")
     try:
         if params["newval"] is not None:
             server.database[room_name]["total"] = int(params["newval"])
-            return redirect(address + port + room_name + "/set")
+            return redirect("http://127.0.0.1:5000/" + room_name + "/set")
     except ValueError:
         return "Wrong parameter \"newval\""
     return render_template("room_set.html", room_name=room_name)
@@ -183,7 +199,7 @@ def main():
     server.start()
     savedata.start()
     plot.start()
-    app.run()
+    app.run(debug=True, host='0.0.0.0', port=5000)
 
 
 if __name__ == "__main__":

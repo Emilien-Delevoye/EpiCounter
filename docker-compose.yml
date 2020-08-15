@@ -1,0 +1,32 @@
+version: "3.5"
+services:
+  app_flask:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - 5000:5000
+    depends_on:
+      - db
+
+  db:
+    build:
+      context: ./db
+      dockerfile: Dockerfile
+    ports:
+      - 5432:5432
+    env_file:
+      - db/env_psql
+    volumes:
+      - dbdata:/var/lib/postgresql/data
+
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 4343:8080
+    depends_on:
+      - db
+
+volumes:
+  dbdata:
