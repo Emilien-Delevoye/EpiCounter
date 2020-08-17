@@ -1,15 +1,19 @@
+import sys
+
 from WebInterface.use_functions import get_file_name
 from datetime import datetime
 from threading import Thread
 import socket
 import select
 import json
+from WebInterface.database import Count
 
 
 class Server(Thread):
-    def __init__(self, init):
+    def __init__(self, init, db):
         Thread.__init__(self)
         self.init = init
+        self.db = db
         self.__source__ = init.get_dict()
         self.database = {}
         self.database_status = {}
@@ -32,7 +36,11 @@ class Server(Thread):
 
     def run(self):
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        sock.bind(("0.0.0.0", 4242))
+        try:
+            print("bind")
+            sock.bind(("0.0.0.0", 4242))
+        except:
+            pass
         sock.listen(5)
         sock.setblocking(False)
         inputs = [sock]
@@ -71,6 +79,13 @@ class Server(Thread):
             if data[2] == "+1":
                 self.database[data[0]][data[1]][0] += 1
                 self.database[data[0]]["total"] += 1
+
+                new_dt = Count(update=1, room=data[0], door=data[1],
+                               total=self.database[data[0]]["total"],
+                               total_raw=self.database[data[0]]["total"])
+                self.db.session.add(new_dt)
+                self.db.session.commit()
+
             elif data[2] == "-1" and self.database[data[0]]["total"] > 0:
                 self.database[data[0]][data[1]][1] += 1
                 self.database[data[0]]["total"] -= 1

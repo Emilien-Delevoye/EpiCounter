@@ -7,6 +7,7 @@ from WebInterface.init_data import InitData
 from WebInterface.create_plot import CreatePlot
 from WebInterface.login_check import check_login
 from flask_sqlalchemy import SQLAlchemy
+#from db.database import Database
 import json
 import time
 import os
@@ -17,19 +18,9 @@ app = Flask(__name__)
 app.secret_key = "admin"
 app.url_map.strict_slashes = False
 
-# Connexion à la base postgresql
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql+psycopg2://postgres:postgres@db/tasks'
+
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql+psycopg2://postgres:postgres@db/epicounter_db'
 db = SQLAlchemy(app)
-
-# Table temporaire (pour tester)
-class Test(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    content = db.Column(db.String(200), nullable=False)
-    date_created = db.Column(db.DateTime, default=d_time.datetime.utcnow)
-
-    def __repr__(self):
-        return '<id: %r>' % self.id
-
 
 init = InitData()
 try:
@@ -37,8 +28,8 @@ try:
 except FileNotFoundError:
     exit(1)
 print(init.get_dict())
-server = Server(init)
-savedata = SaveData(server)
+server = Server(init, db)
+save_data = SaveData(server)
 plot = CreatePlot(server)
 
 
@@ -197,9 +188,9 @@ def home():
 
 def main():
     server.start()
-    savedata.start()
+    save_data.start()
     plot.start()
-    app.run(debug=True, host='0.0.0.0', port=5000)
+    app.run(debug=False, host='0.0.0.0', port=5000)
 
 
 if __name__ == "__main__":
