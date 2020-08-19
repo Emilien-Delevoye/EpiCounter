@@ -10,26 +10,26 @@ class CreatePlot(Thread):
     def __init__(self, server):
         Thread.__init__(self)
         self.server = server
-        self.minute_bf_calc = 10
+        self.minute_bf_calc = 1
 
     def run(self):
         current = False
         while True:
             if (datetime.now().minute % self.minute_bf_calc) == 0 and datetime.now().second == 10 and current is False:
+                print("Start plot generation", flush=True)
                 current = True
-                print("Start plot generation")
                 data = self.__read_file__()
                 if data is not None:
                     new_data = {}
                     for j in list(data[list(data.keys())[0]].keys()):
+                        print("j=", j, flush=True)
                         for i in data.keys():
                             new_data[i] = data[i][j]["total"]
                         self.__create_plot__(j, new_data)
                         new_data = {}
-                print("End plot generation")
+                print("End plot generation", flush=True)
             elif (datetime.now().minute % self.minute_bf_calc) != 0 and datetime.now().second != 10 and current is True:
                 current = False
-
 
     def __read_file__(self):
         try:
@@ -57,4 +57,4 @@ class CreatePlot(Thread):
         plt.gcf().autofmt_xdate()
         plt.savefig("static/images/" + room_name + ".png", dpi=300)
         plt.close()
-        print("Plot for", room_name, "generated")
+        print("Plot for", room_name, "generated", flush=True)

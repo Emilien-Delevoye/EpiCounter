@@ -1,6 +1,6 @@
 from flask import Flask, send_from_directory, jsonify, request, render_template, redirect, session
-from datetime import datetime as d_time2
-import datetime as d_time
+from datetime import datetime as datetime_dt
+import datetime as datetime
 from WebInterface.server import Server
 from WebInterface.save_data import SaveData
 from WebInterface.init_data import InitData
@@ -35,7 +35,7 @@ plot = CreatePlot(server)
 
 def read_file():
     try:
-        with open("data/" + datetime.now().strftime("%d-%m-%Y") + ".json", "r") as file:
+        with open("data/" + datetime_dt.now().strftime("%d-%m-%Y") + ".json", "r") as file:
             all_data = json.load(file)
     except FileNotFoundError:
         return None
@@ -102,7 +102,7 @@ def status():
             for i in server.database_status:
                 output[i] = {}
                 for j in server.database_status[i]:
-                    if server.database_status[i][j] is None or datetime.fromtimestamp(time.time() - 30) > server.database_status[i][j]:
+                    if server.database_status[i][j] is None or datetime_dt.fromtimestamp(time.time() - 30) > server.database_status[i][j]:
                         output[i][j] = False
                     else:
                         output[i][j] = True
@@ -155,6 +155,11 @@ def room(room_name):
     params = dict()
     params["format"] = request.values.get('format')
     params["current"] = request.values.get('current')
+
+    if "logged_in" in session and session["logged_in"] is True:
+        return return_data(params, str(room_name), "Set number")
+    return return_data(params, str(room_name), "")
+
     try:
         if "logged_in" in session and session["logged_in"] is True:
             return return_data(params, str(room_name), "Set number")

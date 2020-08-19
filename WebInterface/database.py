@@ -14,7 +14,7 @@ class Count(db.Model):
     door = db.Column(db.String(200), nullable=False)
     total = db.Column(db.Integer, nullable=False)
     total_raw = db.Column(db.Integer, nullable=True)
-    date_created = db.Column(db.DateTime, default=d_time.datetime.utcnow, nullable=False)
+    date_created = db.Column(db.TIMESTAMP, default=d_time.datetime.utcnow, nullable=False)
 
     def __repr__(self):
         return '<id: %r>' % id
