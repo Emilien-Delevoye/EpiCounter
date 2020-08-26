@@ -1,6 +1,6 @@
-CREATE DATABASE epicounter_db
+CREATE DATABASE epicounter_db;
 
-\c epicount_db
+\c epicounter_db;
 
 CREATE TABLE count (
     id INTEGER NOT NULL,
@@ -10,4 +10,4 @@ CREATE TABLE count (
     total INTEGER NOT NULL,
     total_raw INTEGER,
     date_created TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL
-)
+);
